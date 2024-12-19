@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-control {
+  @apply border border-gray-300 dark:border-gray-600 p-2 rounded bg-gray-50 dark:bg-gray-700 dark:text-white;
+}
+.btn {
+  @apply bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors;
+}
+
+.sidebar {
+  @apply bg-gray-800 text-gray-200 shadow-sm min-h-screen w-64;
+}
+.sidebar-item {
+  @apply flex items-center p-2 text-gray-300 rounded hover:bg-gray-300 hover:text-gray-800;
+}
+.sidebar-nav {
+  @apply p-4 bg-gradient-to-t from-gray-700 to-gray-950 border-t border-gray-700 min-h-screen;
+}
+.sidebar-nav ul {
+  @apply space-y-2;
+}
+
+.sidebar-header {
+  @apply flex items-center justify-center p-4 bg-gradient-to-tl from-indigo-600 to-pink-600 ml-4 mr-4 rounded-2xl mb-4;
+}
