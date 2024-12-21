@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Sidebar() {
     const menuItems = [
-        { title: 'Dashboard', href: '/dashboard', icon: 'fa-solid fa-chart-simple' },
+        { title: 'Dashboard', href: '/backoffice/dashboard', icon: 'fa-solid fa-chart-simple' },
         { title: 'พนักงานร้าน', href: '/backoffice/user', icon: 'fa-solid fa-users' },
         { title: 'บันทึกการซ่อม', href: '/backoffice/repair-record', icon: 'fa-solid fa-screwdriver' },
         { title: 'สถานะการซ่อม', href: '/backoffice/repair-status', icon: 'fa-solid fa-gear' },

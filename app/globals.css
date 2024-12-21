@@ -43,3 +43,18 @@ body {
 .sidebar-header {
   @apply flex items-center justify-center p-4 bg-gradient-to-tl from-indigo-600 to-pink-600 ml-4 mr-4 rounded-2xl mb-4;
 }
+.card {
+  @apply bg-gray-800 p-8 rounded-2xl shadow-md h-full bg-opacity-50;
+}
+.card input {
+  @apply w-full mt-2;
+}
+.card h1 {
+  @apply text-2xl font-bold text-gray-200 mb-5;
+}
+.card-body {
+  @apply text-gray-400;
+}
+.btn-primary {
+  @apply bg-indigo-500 text-white px-4 py-2 rounded-full mt-5 hover:bg-indigo-600;
+}
