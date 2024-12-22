@@ -22,19 +22,9 @@ export default function Page() {
 
     useEffect(() => {
         fetchUsers();
-
-        const initializeData = async () => {
-            await fetchDepartments();
-
-            if (departments.length > 0) {
-                const initialDepartmentId = (departments[0] as any).id;
-                setDepartmentId(initialDepartmentId);
-                await fetchSections(initialDepartmentId);
-            }
-        }
-
-        initializeData();
+        fetchDepartments();
     }, []);
+
 
     const fetchDepartments = async () => {
         const response = await axios.get(`${config.apiUrl}/api/department/list`);
@@ -82,6 +72,7 @@ export default function Page() {
                 username: username,
                 password: password,
                 level: level,
+                sectionId: sectionId,
                 // sectionId: parseInt(sectionId + ""),
             }
 
