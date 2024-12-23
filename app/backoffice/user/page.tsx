@@ -75,13 +75,37 @@ export default function Page() {
                 sectionId: sectionId,
                 // sectionId: parseInt(sectionId + ""),
             }
-
             if (id == '') {
+                // Check if username exists
+                const response = await axios.get(`${config.apiUrl}/api/user/checkUsername/${username}`);
+                
+                if (response.data === true) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Username already exists'
+                    });
+                    return;
+                }
+
+                const payload = {
+                    username: username,
+                    password: password,
+                    level: level,
+                    sectionId: sectionId,
+                }
+                
                 await axios.post(`${config.apiUrl}/api/user/create`, payload);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'User created successfully'
+                });
             } else {
                 await axios.put(`${config.apiUrl}/api/user/updateUser/${id}`, payload);
                 setId('');
             }
+
 
             fetchUsers();
             handleCloseModal();
