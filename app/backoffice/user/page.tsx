@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { config } from "@/app/config";
-import Modal from "@/app/components/model";
+import Modal from "@/app/components/modal";
 import Swal from "sweetalert2";
 
 export default function Page() {
@@ -72,8 +72,7 @@ export default function Page() {
                 username: username,
                 password: password,
                 level: level,
-                sectionId: sectionId,
-                // sectionId: parseInt(sectionId + ""),
+                sectionId: parseInt(sectionId + ""),
             }
             if (id == '') {
                 // Check if username exists
@@ -130,6 +129,7 @@ export default function Page() {
         setConfirmPassword('');
         setLevel(user.level);
         setShowModal(true);
+
 
         const selectedDepartmentId = user?.section?.department?.id ?? (departments[0] as any).id;
         setDepartmentId(selectedDepartmentId);
