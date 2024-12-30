@@ -22,7 +22,16 @@ export default function Page() {
 
     useEffect(() => {
         fetchUsers();
-        fetchDepartments();
+        const initializeData = async () => {
+            await fetchDepartments();
+
+            if (departments.length > 0) {
+                const initialDepartmentId = (departments[0]as any).id;
+                setDepartmentId(initialDepartmentId);
+                await fetchSections(initialDepartmentId);
+            }
+        }
+        initializeData();
     }, []);
 
 
