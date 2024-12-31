@@ -47,22 +47,21 @@ const [repairRecords, setRepairRecords] = useState([])
     }
 
     const getStatusName = (status: string) => {
-        switch(status){
+        switch (status) {
             case 'active':
-                return 'รอซ่อม'
+                return 'รอซ่อม';
             case 'pending':
-                return 'รอลูกค้ายืนยัน'
+                return 'รอลูกค้ายืนยัน';
             case 'repairing':
-                return 'รอซ่อม'
+                return 'กำลังซ่อม';
             case 'done':
-                return 'ซ่อมเสร็จ'
+                return 'ซ่อมเสร็จ';
             case 'cancel':
-                return 'ยกเลิก'
+                return 'ยกเลิก';
             case 'complete':
-                return 'ลูกค้ามารับอุปกรณ์'
+                return 'ลูกค้ามารับอุปกรณ์';
             default:
-                return 'รอซ่อม'
-
+                return 'รอซ่อม';
         }
     }
      
