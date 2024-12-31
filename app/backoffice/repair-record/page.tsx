@@ -23,10 +23,12 @@ const [repairRecords, setRepairRecords] = useState([])
     const [solving, setSolving] = useState('');
     const [deviceId, setDeviceId] = useState('');
     const [expireDate, setExpireDate] = useState('');
+    const [id, setId] = useState(0);
 
 
     useEffect(() => {
         fetchDevices()
+        fetchRepairRecords()
     }, [])
 
     const fetchDevices = async () => {
@@ -39,7 +41,34 @@ const [repairRecords, setRepairRecords] = useState([])
     }
 
     const closeModal = () => {
+        fetchRepairRecords()
         setShowModal(false);
+        setId(0);
+    }
+
+    const getStatusName = (status: string) => {
+        switch(status){
+            case 'active':
+                return 'รอซ่อม'
+            case 'pending':
+                return 'รอลูกค้ายืนยัน'
+            case 'repairing':
+                return 'รอซ่อม'
+            case 'done':
+                return 'ซ่อมเสร็จ'
+            case 'cancel':
+                return 'ยกเลิก'
+            case 'complete':
+                return 'ลูกค้ามารับอุปกรณ์'
+            default:
+                return 'รอซ่อม'
+
+        }
+    }
+     
+    const fetchRepairRecords = async () => {
+        const response = await axios.get(`${config.apiUrl}/api/repairRecord/list`)
+        setRepairRecords(response.data)
     }
 
     const handleDeviceChange = (deviceId: string) => {
@@ -64,43 +93,90 @@ const [repairRecords, setRepairRecords] = useState([])
         }
     }
 
+    
+
     const handleSave = async () => {
         const payload = {
-            customerName: customerName,
-            customerPhone: customerPhone,
-            deviceId: deviceId == '' ? undefined : deviceId,
-            deviceName: deviceName,
-            deviceBarcode: deviceBarcode,
-            deviceSerial: deviceSerial,
-            expireDate: expireDate == '' ? undefined : new Date(expireDate),
-            problem: problem,
-            solving: solving 
-        }
+            customerName,
+            customerPhone,
+            deviceId: deviceId === '' ? undefined : deviceId,
+            deviceName,
+            deviceBarcode,
+            deviceSerial,
+            expireDate: expireDate === '' ? undefined : new Date(expireDate),
+            problem,
+            solving,
+        };
+    
         try {
-            await axios.post(`${config.apiUrl}/api/repairRecord/create`, payload);
+            if(id == 0){
+                const response = await axios.get(`${config.apiUrl}/api/repairRecord/checkDeviceSerial/${deviceSerial}`);
+                if (response.data === true) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Device serial already exists',
+                    });
+                    return;
+                }else{
+                    await axios.post(`${config.apiUrl}/api/repairRecord/create`, payload);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Repair record created successfully',
+                    });
+                }
+                
+            }else{
+                await axios.put(`${config.apiUrl}/api/repairRecord/update/${id}`, payload);
+                setId(0);
+            }
             Swal.fire({
                 title: 'Success',
                 text: 'Repair record created successfully',
                 icon: 'success',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
             });
-            
-            closeModal()
-        } catch (error: any) {
+            closeModal();
+        } catch (error:any) {
             Swal.fire({
                 title: 'Error',
-                text: error.response.data.message,
+                text: error.response?.data?.message || 'An error occurred. Please try again.',
                 icon: 'error',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
             });
         }
+    };
+    const handleDelete = async (id: number) => {
+        await axios.delete(`${config.apiUrl}/api/repairRecord/remove/${id}`);
+        Swal.fire({
+            title: 'Deleted',
+            text: 'Repair record deleted successfully',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+        fetchRepairRecords();
     }
 
+    const handleEdit = (repairRecordId: any) => {
+        setId(repairRecordId.id)
+        setCustomerName(repairRecordId.customerName)
+        setCustomerPhone(repairRecordId.customerPhone)
 
-
+        if(repairRecordId.deviceId){
+        setDeviceName(repairRecordId.deviceId)
+        }
+        setDeviceName(repairRecordId.deviceName)
+        setDeviceBarcode(repairRecordId.deviceBarcode)
+        setDeviceSerial(repairRecordId.deviceSerial)
+        setExpireDate(dayjs(repairRecordId.expireDate).format('YYYY-MM-DD'))
+        setProblem(repairRecordId.problem)
+        setSolving(repairRecordId.solving)
+        openModal();
+    }
 
     return (
-       <div> 
+       <> 
         <div className="card">
             <h1>Repair Record</h1>
             <div className="card-body">
@@ -108,6 +184,46 @@ const [repairRecords, setRepairRecords] = useState([])
                     <i className="fa-solid fa-plus mr-3"></i>
                     Add Repair Record
                     </button>
+                    <table className='table mt-3'>
+                        <thead>
+                            <tr>
+                                <th>ชื่อลูกค้า</th>
+                                <th>เบอร์โทรศัพท์</th>
+                                <th>อุปกรณ์</th>
+                                <th>อาการเสีย</th>
+                                <th>วันที่รับซ่อม</th>
+                                <th>วันซ่อมเสร็จ</th>
+                                <th>สถานะ</th>
+                                <th style={{width: '150px'}}></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {repairRecords.map((repairRecord: any, index: number) => (
+                                <tr key={index}>
+                                    <td>{repairRecord.customerName}</td>
+                                    <td>{repairRecord.customerPhone}</td>
+                                    <td>{repairRecord.deviceName}</td>
+                                    <td>{repairRecord.problem}</td>
+                                    <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
+                                    <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
+                                    <td>{getStatusName(repairRecord.status)}</td>
+                                    <td className="text-center" style={{ width: '220px' }}>
+                                        <button className="btn-edit" style={{ borderRadius: "8px" }} 
+                                        onClick={() => handleEdit(repairRecord)}>
+                                            <i className="fa-solid fa-edit mr-3"></i>
+                                            แก้ไข
+                                        </button>
+                                        <button className="btn-delete" style={{ borderRadius: "8px" }} 
+                                        onClick={() => handleDelete(repairRecord.id)}>
+                                            <i className="fa-solid fa-trash mr-3"></i>
+                                            ลบ
+                                        </button>
+                                       
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
             </div>
         </div>
 
@@ -181,6 +297,6 @@ const [repairRecords, setRepairRecords] = useState([])
 
                 
         </Modal>
-        </div>
+        </>
     );
 }

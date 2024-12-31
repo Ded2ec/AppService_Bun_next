@@ -193,12 +193,12 @@ export default function Page() {
                                 <td>{user?.section?.department?.name}</td>
                                 <td>{user?.section?.name}</td>
                                 <td className="text-center" style={{ width: '220px' }}>
-                                    <button className="btn-edit"
+                                    <button className="btn-edit" style={{ borderRadius: "8px" }} 
                                         onClick={() => handleEdit(user)}>
                                         <i className="fa-solid fa-edit mr-2"></i>
                                         แก้ไข
                                     </button>
-                                    <button className="btn-delete"
+                                    <button className="btn-delete" style={{ borderRadius: "8px" }} 
                                         onClick={() => handleDelete(user.id)}>
                                         <i className="fa-solid fa-trash mr-2"></i>
                                         ลบ
