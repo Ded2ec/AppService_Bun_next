@@ -75,6 +75,7 @@ export default function page() {
             setId(repairRecord.id);
             setStatus(repairRecord?.status ?? ''   );
             setSolving(repairRecord?.solving ?? '');
+            setEngineerId(repairRecord?.engineerId ?? '');
             setShowModal(true);
         }
     }
@@ -82,7 +83,9 @@ export default function page() {
         try {
             const payload = {
                 status: status,
-                solving: solving
+                solving: solving,
+                engineerId: engineerId
+
             }
             const respone = await axios.put(`${config.apiUrl}/api/repairRecord/updateStatus/${id}`,payload);
                 fetchRepairRecords();
