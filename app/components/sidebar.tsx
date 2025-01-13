@@ -6,7 +6,6 @@ export function Sidebar() {
         { title: 'พนักงานร้าน', href: '/backoffice/user', icon: 'fa-solid fa-users' },
         { title: 'บันทึกการซ่อม', href: '/backoffice/repair-record', icon: 'fa-solid fa-screwdriver' },
         { title: 'สถานะการซ่อม', href: '/backoffice/repair-status', icon: 'fa-solid fa-gear' },
-        { title: 'สถิติการซ่อมของช่าง', href: '/backoffice/mecthanic-report', icon: 'fa-solid fa-right-from-bracket' },
         { title: 'รายงานรายได้', href: '/backoffice/income-report', icon: 'fa-solid fa-money-bill' },
         { title: 'ทะเบียนวัสดุ อุปกรณ์', href: '/backoffice/device', icon: 'fa-solid fa-box' },
         { title: 'ข้อมูลร้าน', href: '/backoffice/company', icon: 'fa-solid fa-shop' },
