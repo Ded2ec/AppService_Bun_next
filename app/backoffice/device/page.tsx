@@ -18,14 +18,36 @@ export default function Page() {
     const [remark, setRemark] = useState('');
     const [id, setId] = useState(0);
 
+      //
+    // pagination
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(2);
+    const [totalPage, setTotalPage] = useState(0);
+    const [totalPageList, setTotalPageList] = useState<number[]>([]); // array ไว้เก็บเลขหน้า
+
+
+
+
     useEffect(() => {
         fetchData();
     }, []);
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`${config.apiUrl}/api/device/list`);
-            setDevices(response.data);
+            const params = {
+                page: page,
+                pageSize: pageSize
+            }
+            const response = await axios.get(`${config.apiUrl}/api/device/list`, { params });
+            setDevices(response.data.results);
+
+            if (totalPage === 0) {
+                setTotalPage(response.data.totalPage);
+
+                for (let i = 1; i <= response.data.totalPage; i++) {
+                    totalPageList.push(i);
+                }
+            }
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',
@@ -34,6 +56,7 @@ export default function Page() {
             });
         }
     }
+
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -114,6 +137,24 @@ export default function Page() {
         }
     }
 
+    const handlePreviousPage = () => {
+        if (page > 1) {
+            setPage(page - 1);
+            fetchData();
+        }
+    }
+
+    const handleNextPage = () => {
+        if (page < totalPage) {
+            setPage(page + 1);
+            fetchData();
+        }
+    }
+
+    const handleChangePage = (page: number) => {
+        setPage(page);
+        fetchData();
+    }
     return (
         <div className='card'>
             <h1>ทะเบียนวัสดุ อุปกรณ์</h1>
@@ -156,6 +197,26 @@ export default function Page() {
                         ))}
                     </tbody>
                 </table>
+                {/* pagination */}
+                <div className='mt-3'>
+                    <button className='btn-edit' onClick={handlePreviousPage}>
+                        <i className='fa-solid fa-arrow-left'></i>
+                    </button>
+                    {totalPageList.map((item: any) => (
+                        page === parseInt(item) ? (
+                            <button key={item} className='bg-blue-500 text-white px-3 py-2 rounded-md'>
+                                {item}
+                            </button>
+                        ) : (
+                            <button key={item} className='btn-edit mr-1 ml-1' onClick={() => handleChangePage(item)}>
+                                {item}
+                            </button>
+                        )
+                    ))}
+                    <button className='btn-edit' onClick={handleNextPage}>
+                        <i className='fa-solid fa-arrow-right'></i>
+                    </button>
+                </div>
             </div>
 
             <Modal title='ทะเบียนวัสดุ อุปกรณ์' isOpen={showModal}

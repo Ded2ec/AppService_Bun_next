@@ -37,7 +37,13 @@ export default function Home() {
         localStorage.setItem('bun_service_name', response.data.user.username);
         localStorage.setItem('bun_service_level', response.data.user.level);
 
-        router.push('/backoffice/dashboard');
+        if (response.data.user.level === 'admin') {
+          router.push('/backoffice/dashboard');
+        } else if (response.data.user.level === 'user') {
+          router.push('/backoffice/repair-record');
+        } else if (response.data.user.level === 'engineer') {
+          router.push('/backoffice/repair-status');
+        }
       } else {
         Swal.fire({
           icon: 'error',
